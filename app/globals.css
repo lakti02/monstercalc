@@ -1,0 +1,319 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   MonsterCalc design tokens.
+   Every colour a component uses resolves through one of these custom
+   properties, so switching themes is a token swap and nothing more.
+   ========================================================================== */
+
+:root {
+  --bg: #020617;
+  --bg2: #0b1220;
+  --panel: rgba(15, 23, 42, 0.72);
+  --panel2: rgba(30, 41, 59, 0.55);
+  --border: rgba(148, 163, 184, 0.16);
+  --border2: rgba(148, 163, 184, 0.28);
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --key: #0f172a;
+  --keyhi: #1e293b;
+  --accent: #10b981;
+  --cyan: #22d3ee;
+  --shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.85);
+  --glow-a: rgba(16, 185, 129, 0.13);
+  --glow-b: rgba(34, 211, 238, 0.11);
+  --on-accent: #04120c;
+
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --bg2: #ffffff;
+  --panel: rgba(255, 255, 255, 0.86);
+  --panel2: rgba(241, 245, 249, 0.75);
+  --border: rgba(15, 23, 42, 0.11);
+  --border2: rgba(15, 23, 42, 0.2);
+  --text: #0f172a;
+  --muted: #64748b;
+  --key: #ffffff;
+  --keyhi: #f1f5f9;
+  /* Darker than the dark-theme pair so small accent text clears 4.5:1 on a
+     near-white ground (measured 5.24 and 5.12). */
+  --accent: #047857;
+  --cyan: #0e7490;
+  --shadow: 0 24px 60px -34px rgba(15, 23, 42, 0.3);
+  --glow-a: rgba(16, 185, 129, 0.12);
+  --glow-b: rgba(34, 211, 238, 0.12);
+  --on-accent: #04120c;
+
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-border-hair: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-cyan: var(--cyan);
+  --font-sans: var(--font-inter-tight), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter-tight), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--accent);
+}
+
+input,
+select,
+button,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+select option {
+  background: var(--bg2);
+  color: var(--text);
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.75);
+}
+[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+
+/* Keep number inputs from growing spinner chrome that breaks the grid. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Motion
+   -------------------------------------------------------------------------- */
+
+@keyframes mcup {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mcfade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mc-rise {
+  animation: mcup 0.24s ease both;
+}
+
+/* --------------------------------------------------------------------------
+   Interaction states. The design reference expresses hover/active inline;
+   in real DOM they need classes, so every interactive surface gets one.
+   -------------------------------------------------------------------------- */
+
+.mc-hover-line {
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+.mc-hover-line:hover {
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+.mc-grad-btn {
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+.mc-grad-btn:hover {
+  filter: brightness(1.08);
+}
+.mc-grad-btn:active {
+  transform: scale(0.96);
+}
+
+.mc-key {
+  transition: background 0.14s ease, border-color 0.14s ease, transform 0.1s ease,
+    color 0.14s ease;
+}
+.mc-key:hover {
+  border-color: var(--border2);
+  filter: brightness(1.25);
+}
+.mc-key:active {
+  transform: scale(0.94);
+}
+
+.mc-del:hover {
+  color: #f87171 !important;
+  border-color: rgba(248, 113, 113, 0.45) !important;
+  background: rgba(248, 113, 113, 0.12) !important;
+}
+
+.mc-card-link {
+  transition: border-color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+}
+.mc-card-link:hover,
+.mc-card-link:focus-visible {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+}
+
+.mc-chip {
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+.mc-chip:hover {
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+.mc-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+.mc-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.mc-scroll::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 8px;
+}
+.mc-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive: two-column workspaces collapse below 900px, and every tap
+   target grows to at least 44px on touch-sized viewports.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .mc-two-col {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .mc-hero-h1 {
+    font-size: 40px !important;
+  }
+  .mc-blog-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .mc-stack-sm {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .mc-gpa-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .mc-tap {
+    min-height: 44px;
+  }
+  .mc-nav-scroll {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .mc-hero-h1 {
+    font-size: 33px !important;
+  }
+  .mc-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .mc-three {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.mc-skip:focus {
+  left: 12px !important;
+}
+
+/* Header reflow: below 900px the search drops to its own full-width row and
+   the calculator nav scrolls horizontally rather than being hidden. */
+@media (max-width: 900px) {
+  .mc-search {
+    order: 10;
+    flex-basis: 100% !important;
+  }
+  .mc-nav-scroll {
+    order: 9;
+  }
+}
+
+@media (max-width: 620px) {
+  .mc-share span,
+  .mc-share {
+    font-size: 0 !important;
+    gap: 0 !important;
+    padding: 11px 13px !important;
+  }
+  .mc-share svg {
+    font-size: 13px;
+  }
+}
+
+/* Footer links are plain text on desktop; on touch viewports they need a
+   real 44px hit area rather than the height of their line box. */
+.mc-footer-link {
+  min-height: 30px;
+}
+@media (max-width: 900px) {
+  .mc-footer-link {
+    min-height: 44px;
+  }
+}
